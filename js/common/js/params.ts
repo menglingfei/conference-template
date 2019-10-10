@@ -122,7 +122,7 @@ export const AREA_LIST: Array<any> = [
         height: 40
     },
 ];
-export const PASSWORD: string =  'hlwdh2019';
+export const PASSWORD: string =  '1';
 export const PLAN_ID = 95;
 /************************* Common ************************/
 export const DEST = "16_05541352";

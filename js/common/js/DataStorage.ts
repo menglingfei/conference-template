@@ -1,6 +1,5 @@
 import { AsyncStorage } from 'react-native';
-import { Storage } from './Storage';
-import {URL, TOKEN, PLACE_ID} from './params';
+import { URL, TOKEN } from './params';
 import { Loading } from '../../components/Loading/Loading';
 export default class DataStore {
     /**
@@ -11,18 +10,18 @@ export default class DataStore {
     fetchData(api: string, data: any, param: string, net?: boolean) {
         let newApi = param ? api + param : api;
         return new Promise((resolve, reject) => {
-            this.fetchLocalData(newApi).then((wrapData:any) => {
+            this.fetchLocalData(newApi).then((wrapData: any) => {
                 if ((wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) && !net) {
                     resolve(wrapData);
                 } else {
-                    this.beforeFetchNetData(api, data, param).then((_data) => {
+                    this.fetchNetData(api, data).then((_data) => {
                         resolve(this._wrapData(_data));
                     }).catch((error) => {
                         reject(error);
                     })
                 }
             }).catch((error) => {
-                this.beforeFetchNetData(api, data, param).then((_data) => {
+                this.fetchNetData(api, data).then((_data) => {
                     resolve(this._wrapData(_data));
                 }).catch((error => {
                     reject(error);
@@ -73,28 +72,30 @@ export default class DataStore {
             })
         })
     }
+
     /**
      * 获取网络数据
-     * @param api
-     * @param data
-     * @param offline {boolean}
+     * @param url
      * @returns {Promise}
      */
-    beforeFetchNetData(api: string, data: any, param?: string) {
+    async fetchNetData(api: string, data: any) {
         Loading.show();
+        let url = await AsyncStorage.getItem('URL');
+        url = url ? url : URL;
+        // multipart/form-data
+        let formData  = new FormData();
+        for (let name in data) {
+            formData.append(name, data[name]);
+        }
         return new Promise((resolve, reject) => {
-            debugger;
-            fetch(`${URL}${api}`, {
+            fetch(`${url}${api}`, {
                 method: "POST",
                 headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
                     "Authorization": `${TOKEN}` || ''
                 },
-                body: JSON.stringify(data)
+                body: formData // JSON.stringify(data)
             })
                 .then((response) => {
-                    debugger;
                     Loading.hide();
                     if (response.ok) {
                         return response.json();
@@ -102,12 +103,10 @@ export default class DataStore {
                     throw new Error('Network response was not ok.');
                 })
                 .then((responseData) => {
-                    debugger;
-                    this.saveData(api, responseData, null, param)
+                    // this.saveData(api, responseData, null, param)
                     resolve(responseData);
                 })
                 .catch((error) => {
-                    debugger;
                     Loading.hide();
                     reject(error);
                 })
@@ -119,7 +118,7 @@ export default class DataStore {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     "Authorization": `${TOKEN}` || ''
                 },
                 body: JSON.stringify(data)
@@ -156,7 +155,7 @@ export default class DataStore {
         targetDate.setTime(timestamp);
         if (currentDate.getMonth() !== targetDate.getMonth()) return false;
         if (currentDate.getDate() !== targetDate.getDate()) return false;
-        if (currentDate.getHours() - targetDate.getHours() > 4) return false;//有效期4个小时
+        if (currentDate.getHours() - targetDate.getHours() > 0.5) return false;//有效期0.5个小时
         // if (currentDate.getMinutes() - targetDate.getMinutes() > 1)return false;
         return true;
     }

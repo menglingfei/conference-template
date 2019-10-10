@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import Orientation from 'react-native-orientation';
-import { Animated, StyleSheet, View, Image, Text, StatusBar, ToastAndroid } from 'react-native';
+import {Animated, StyleSheet, View, Image, Text, StatusBar, ToastAndroid, AsyncStorage} from 'react-native';
 import { BoxShadow } from 'react-native-shadow';
 import IndexButtonWrap from '../../components/IndexButtonWrap/IndexButtonWrap';
 import IndexButton from '../../components/IndexButton/IndexButton';
 import AreaButton from '../../components/AreaButton/AreaButton';
 import CmdGroupPop from '../../components/CmdGroupPop/CmdGroupPop';
-import PasswordPop from '../../components/PasswordPop/PasswordPop';
 import { Loading } from '../../components/Loading/Loading';
 import Logo from '../../components/Logo/Logo';
 import DataStore from '../../common/js/DataStorage';
-import {
-    AREA_LIST,
-    DEVICE_ALL_ID,
-    PLAN_ID,
-} from '../../common/js/params';
+import { AREA_LIST, PLACE_ID } from '../../common/js/params';
 import { sendCmdGroup } from '../../common/js/utils';
+import PasswordPop from '../../components/PasswordPop/PasswordPop';
+import URLPop from '../../components/URLPop/URLPop';
 
 interface MainProps {
     navigation: any
@@ -34,12 +31,21 @@ interface MainStates {
     timer: any,
     progress: number,
     /**
-     * MAIN    open dialog when initialising APP
+     * WEB     open dialog when switching web pattern
      * COMMAND open dialog when sending commands like open and close
      * DEVICE  open dialog when opening device page
+     * GROUP   open dialog when getting commands group
      */
     passwordRouter: string,
     footType: number,
+    // close all or open all
+    commandType: string,
+    isUrlPop: boolean,
+    /**
+     * OFFLINE 离线
+     * WIFI 无线
+     */
+    currentWebType: string
 }
 const shadowOpt = {
     width: 260, //包裹的子内容多宽这里必须多宽
@@ -66,18 +72,24 @@ export default class Main extends Component<MainProps, MainStates> {
         currentManipType: '',
         timer: undefined,
         progress: 0,
-        passwordRouter: 'MAIN',
-        footType: 1
+        passwordRouter: '',
+        footType: 1,
+        commandType: '',
+        isUrlPop: false,
+        currentWebType: 'WIFI'
     }
-    public static fadeAnimation: any = new Animated.Value(0);
     public static dataStore:any = new DataStore();
-    componentDidMount() {
+    async componentDidMount() {
         Orientation.lockToLandscape();
+        const url = await AsyncStorage.getItem('URL');
+        const currentWebType = url ? 'OFFLINE' : 'WIFI';
+        this.setState({
+            currentWebType
+        })
     }
     sendCmdGroup = () => {
         let that = this;
         this.setState({
-            isConfirmPop: false,
             timer: setInterval(() => {
                 let progress = this.state.progress;
                 if (progress > 0.96) {
@@ -96,6 +108,7 @@ export default class Main extends Component<MainProps, MainStates> {
                 id: this.state.currentManipId
             })
                 .then((data: any) => {
+                    // debugger;
                     clearTimeout(that.state.timer);
                     Loading.hide();
                     ToastAndroid.showWithGravity(
@@ -123,14 +136,9 @@ export default class Main extends Component<MainProps, MainStates> {
         )
     }
     openAreaLayer = (areaName, areaId) => {
-        if (areaId === 148 || areaId === 146) {
-            return;
-        }
-        const planId = PLAN_ID;
         this.props.navigation.navigate('AreaPage', {
             areaId,
-            areaName,
-            planId
+            areaName
         });
     }
     openDeviceLayer = () => {
@@ -145,30 +153,28 @@ export default class Main extends Component<MainProps, MainStates> {
             isCmdPop: false
         })
     }
+    getGroupList = () => {
+        this.setState({
+            isConfirmPop: false
+        }, () => {
+            Main.dataStore.fetchNetData('/api/cmd_grp/list', {
+                place_id: PLACE_ID
+            })
+                .then((data: any) => {
+                    let commands = data.commands;
+                    this.setState({
+                        groupList: commands,
+                        isCmdPop: true
+                    })
+                })
+                .catch((error: any) => {
+                    error && console.log(error.toString());
+                })
+        })
+    }
     openCmd = () => {
         this.setState({
             isCmdPop: true
-        })
-    }
-    openConfirmPop = (id: number, type: string) => {
-        this.setState({
-            isConfirmPop: true,
-            currentManipId: id,
-            currentManipType: type,
-            passwordRouter: 'COMMAND',
-            footType: 2
-        })
-    }
-    openPasswordPop = () => {
-        this.setState({
-            isConfirmPop: true,
-            passwordRouter: 'DEVICE',
-            footType: 2
-        })
-    }
-    closeConfirmPop = () => {
-        this.setState({
-            isConfirmPop: false
         })
     }
     beforeCloseAllDevice = () => {
@@ -178,20 +184,30 @@ export default class Main extends Component<MainProps, MainStates> {
             this.sendCmdGroup();
         })
     }
-    clearStorage = () => {
-        Main.dataStore.deleteData(() => {
-            ToastAndroid.showWithGravity(
-                '清除成功！',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER
-            );
-        });
+    openPasswordPop = (route: string, command: string) => {
+        this.setState({
+            isConfirmPop: true,
+            passwordRouter: route,
+            commandType: command,
+            footType: 2
+        })
+    }
+    closeConfirmPop = () => {
+        this.setState({
+            isConfirmPop: false
+        })
+    }
+    closeUrlPop = () => {
+        this.setState({
+            isUrlPop: false
+        })
     }
     beforePassWordSuccess = () => {
         const { passwordRouter } = this.state;
         switch (passwordRouter) {
-            case 'MAIN':
-                this.closeConfirmPop();
+            case 'WEB':
+                // this.closeConfirmPop();
+                this.openURLPop();
                 break;
             case 'COMMAND':
                 this.sendCmdGroup();
@@ -199,10 +215,27 @@ export default class Main extends Component<MainProps, MainStates> {
             case 'DEVICE':
                 this.openDeviceLayer();
                 break;
+            case 'GROUP':
+                this.getGroupList();
+                break;
+            default:
+                break;
         }
     }
+    openURLPop = () => {
+        this.setState({
+            isConfirmPop: false,
+            isUrlPop: true
+        })
+    }
+    cbUrlConfirm = async (currentWebType) => {
+        this.setState({
+            isUrlPop: false,
+            currentWebType
+        })
+    }
     render() {
-        const { footType } = this.state;
+        const { footType, isUrlPop, currentWebType } = this.state;
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -211,37 +244,37 @@ export default class Main extends Component<MainProps, MainStates> {
                 <Logo main={false}/>
                 <View style={styles.contentContainer}>
                     <View style={styles.contentArea}>
-                        <Image style={[styles.bg, {zIndex: 1}]} source={ require('./displayBg.png')} />
-                        <View style={styles.areaWrapper}>
-                            <View style={[styles.areaList]}>
-                                {this.renderAreaList()}
-                            </View>
+                        <Image style={[styles.bg, {zIndex: 1}]} source={require('./displayBg.png')} />
+                        <View style={[styles.areaList]}>
+                            {this.renderAreaList()}
                         </View>
                     </View>
                     <BoxShadow setting={shadowOpt}>
+                        <Text style={styles.currentWeb}>当前网络：{ currentWebType === 'WIFI' ? '无线网络' : '离线模式' }</Text>
                         <View style={styles.contentIndex}>
                             <View style={styles.header}>
-                                <Image style={styles.totalLogo} source={require('./logo.png')} />
-                                <Text style={styles.total}>天津网安博览会通服网安展区</Text>
+                                <Text style={styles.totalEn}>INTERNET</Text>
+                                <Text style={styles.total}>互联网大会</Text>
                             </View>
                             <View style={styles.headerEn}>
-                                <Text style={styles.headerEnLine}>TIANJIN NET</Text>
-                                <Text style={styles.headerEnLine}>OF NINGBO INTELLIGENT INDUSTRY EXPO</Text>
+                                <Text style={styles.headerEnLine}>Integrated Pipeline</Text>
+                                <Text style={styles.headerEnLine}>Gallery Exhibition Hall</Text>
                             </View>
-                            <IndexButtonWrap titleCn='展厅导览' titleEn='Exhibition Hall Guide'>
-                                <View style={styles.marT2}>
-                                    <IndexButton titleCn='设备管理' titleEn='Equipment Management' icon='desktop-mac' handleClick={this.openPasswordPop}/>
-                                </View>
-                            </IndexButtonWrap>
                             <IndexButtonWrap titleCn='公共设施' titleEn='Public Facilities'>
                                 <View style={styles.marT1}>
-                                    <IndexButton titleCn='展厅全开' titleEn='Power On' icon='power' handleClick={() => {this.openConfirmPop(DEVICE_ALL_ID.ON, 'ON')}}/>
+                                    <IndexButton titleCn='设备管理' titleEn='Equipment Management' icon='desktop-mac' handleClick={this.openPasswordPop.bind(this, 'DEVICE')}/>
                                 </View>
                                 <View style={styles.marT1}>
-                                    <IndexButton titleCn='展厅全关' titleEn='Power Off' icon='power-off' handleClick={() => {this.openConfirmPop(DEVICE_ALL_ID.OFF, 'OFF')}}/>
+                                    <IndexButton titleCn='指令组' titleEn='Command' icon='cards-variant' handleClick={this.openPasswordPop.bind(this, 'GROUP')}/>
                                 </View>
                                 <View style={styles.marT1}>
-                                    <IndexButton titleCn="清除缓存" titleEn='Clear' icon='buffer' handleClick={this.clearStorage}/>
+                                    <IndexButton titleCn='切换网络' titleEn='Web' icon='web' handleClick={this.openPasswordPop.bind(this, 'WEB')} />
+                                </View>
+                                <View style={styles.marT1}>
+                                    <IndexButton titleCn='全开' titleEn='Power On' icon='power' handleClick={this.openPasswordPop.bind(this, 'COMMAND', 'ON')}/>
+                                </View>
+                                <View style={styles.marT1}>
+                                    <IndexButton titleCn='全关' titleEn='Power Off' icon='power-off' handleClick={this.openPasswordPop.bind(this, 'COMMAND', 'OFF')}/>
                                 </View>
                             </IndexButtonWrap>
                         </View>
@@ -258,6 +291,12 @@ export default class Main extends Component<MainProps, MainStates> {
                     cbCancel={this.closeConfirmPop}
                     cbConfirm={this.beforePassWordSuccess}
                     footType={footType}
+                />
+                <URLPop
+                    prevWebType={currentWebType}
+                    visible={isUrlPop}
+                    cbCancel={this.closeUrlPop}
+                    cbConfirm={this.cbUrlConfirm}
                 />
             </View>
         );
@@ -296,7 +335,7 @@ const styles = StyleSheet.create({
     },
     contentIndex: {
         width: 260,
-        height: 480,
+        height: 460,
         backgroundColor: 'rgba(255, 255, 255, 1)',
         borderRadius: 10,
         borderWidth: 1,
@@ -326,32 +365,30 @@ const styles = StyleSheet.create({
         zIndex: 100
     },
     marT1: {
-        marginTop: 6
+        marginTop: 10
     },
     marT2: {
-        marginTop: 4
+        marginTop: 6
     },
     header: {
         marginTop: 13
     },
     total: {
-        height: 40,
-        lineHeight: 40,
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: '600',
         color: 'rgba(0, 0, 0, 1)',
         marginTop: -8
     },
-    totalLogo: {
-        width: 102,
-        height: 26
+    totalEn: {
+        fontSize: 32,
+        color: 'rgba(153, 153, 153, 1)'
     },
     headerEn: {
-        marginTop: 5,
-        marginBottom: 20
+        marginTop: 10,
+        marginBottom: 25
     },
     headerEnLine: {
-        fontSize: 10,
+        fontSize: 9,
         color: 'rgba(51, 51, 51, 1)',
         height: 10,
         lineHeight: 10
@@ -366,5 +403,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: 195
+    },
+    currentWeb: {
+        position: 'absolute',
+        top: -30,
+        left: 0,
+        zIndex: 1000,
+        color: '#d1d1d1',
+        fontSize: 12
     }
 });
