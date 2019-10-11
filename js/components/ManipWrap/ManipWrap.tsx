@@ -4,6 +4,7 @@ import ManipulateButton from "../ManipulateButton/ManipulateButton";
 import { manipulate } from '../../common/js/utils';
 import WelcomeWrap from "../WelcomeWrap/WelcomeWrap";
 import PageLayer from "../PageLayer/PageLayer";
+import {PLAN_ID} from "../../common/js/params";
 
 interface ManipProps {
     areaId: number,
@@ -49,13 +50,6 @@ export default class ManipWrap extends Component<ManipProps, ManipStates> {
                     <ManipulateButton title='暂停' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/goto_task', {play: 0, progress: -1, task_id: taskId, device_id: deviceId})}} icon='pause' />
                 </View>
                 <View style={styles.btnRowWrap}>
-                    <ManipulateButton title='重播' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/goto_task', {progress: 0, play: 1, task_id: taskId, device_id: deviceId})}} icon='repeat' />
-                    {
-                        this.props.isList &&
-                        <ManipulateButton title='列表' color={color} handleClick={this.props.openListPop} icon='list' />
-                    }
-                </View>
-                <View style={styles.btnRowWrap}>
                     <ManipulateButton title='上一页' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/page_up', {area_id: areaId, device_id: deviceId})}} icon='step-backward' />
                     <ManipulateButton title='下一页' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/page_down', {area_id: areaId, device_id: deviceId})}} icon='step-forward' />
                 </View>
@@ -65,11 +59,15 @@ export default class ManipWrap extends Component<ManipProps, ManipStates> {
                     <ManipulateButton title='静音' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/set_volume', {volume: 0, area_id: areaId, device_id: deviceId})}} icon='volume-off' />
                 </View>
                 <View style={styles.btnRowWrap}>
-                    {/*
                     <ManipulateButton title='上一幕' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/prev_scene', {area_id: areaId, plan_id: PLAN_ID})}} icon='fast-backward' />
                     <ManipulateButton title='下一幕' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/next_scene', {area_id: areaId, plan_id: PLAN_ID})}} icon='fast-forward' />
-                    <ManipulateButton title='欢迎词' color={color} handleClick={this.openWelcomeLayer} icon='microphone' />
-                    */}
+                </View>
+                <View style={styles.btnRowWrap}>
+                    <ManipulateButton title='重播' color={color} handleClick={() => {manipulate('/api/ctrl_cmd/goto_task', {progress: 0, play: 1, task_id: taskId, device_id: deviceId})}} icon='repeat' />
+                    {
+                        this.props.isList &&
+                        <ManipulateButton title='列表' color={color} handleClick={this.props.openListPop} icon='list' />
+                    }
                 </View>
                 <PageLayer
                     visible={this.state.isWelcomePop}

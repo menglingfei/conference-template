@@ -65,7 +65,6 @@ export default class AreaPage extends Component<AreaProps, AreaState> {
     };
     private static dataStore = new DataStore();
     componentDidMount() {
-        debugger;
         areaId = this.props.navigation.getParam('areaId');
         areaName = this.props.navigation.getParam('areaName');
         planId = this.props.navigation.getParam('planId');
@@ -131,6 +130,7 @@ export default class AreaPage extends Component<AreaProps, AreaState> {
                     currentTaskId: newData.length > 0 ? newData[0].id : 0,
                     isDevicePop: false
                 }, () => {
+                    if (0 === newData.length) return;
                     const taskId =  newData[0].id;
                     newData.length > 0 && manipulate('/api/ctrl_cmd/goto_task', {play: 1, progress: -1, task_id: taskId, device_id: deviceId})
                 })
@@ -146,7 +146,6 @@ export default class AreaPage extends Component<AreaProps, AreaState> {
         };
         AreaPage.dataStore.fetchData('/api/play_task/area_tasks', param, JSON.stringify(param))
             .then((data: any) => {
-                debugger;
                 let tasks = data.data.tasks;
                 let newData = tasks.filter((item: any) => {
                     return item.invisible === 0
@@ -171,7 +170,6 @@ export default class AreaPage extends Component<AreaProps, AreaState> {
         };
         AreaPage.dataStore.fetchData('/api/device/list', param, JSON.stringify(param))
             .then((data: any) => {
-                debugger;
                 let devices = data.data.devices;
                 let newData = devices.filter((item: any) => {
                     return item.category_id === 2
@@ -183,7 +181,6 @@ export default class AreaPage extends Component<AreaProps, AreaState> {
                     currentDeviceName: newData[0].name,
                     currentDeviceIp: newData[0].ip
                 }, () => {
-                    debugger;
                     this.getScene(newData[0].id, newData[0].name, newData[0].ip);
                 })
             })
@@ -312,7 +309,6 @@ export default class AreaPage extends Component<AreaProps, AreaState> {
                                     <TaskListHeader
                                         title='内容列表'
                                     />
-
                                     <TaskList
                                         taskList={this.state.tasksList}
                                         onTaskChange={this.onTaskChange}
