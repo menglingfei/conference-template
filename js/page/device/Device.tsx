@@ -129,11 +129,9 @@ export default class DevicePage extends Component<DeviceProps, DeviceStates> {
                     hidden={true}
                 />
                 <Logo main={false} />
-                {/*
                 <TouchableOpacity style={styles.cmdGroup} onPress={this.getCmdGroup}>
                     <CmdIcon />
                 </TouchableOpacity>
-                */}
                 <TouchableOpacity style={styles.mouse} onPress={this.toScreen}>
                     <Mouse />
                 </TouchableOpacity>

@@ -13,7 +13,7 @@ export default function AreaButton(ButtonProps: ButtonProps) {
     return (
         <TouchableOpacity
             style={{
-                backgroundColor: 'rgba(255, 255, 255, 0)',
+                backgroundColor: 'red',
                 position: 'absolute',
                 zIndex: 10000,
                 top: ButtonProps.y,

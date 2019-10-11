@@ -9,7 +9,7 @@ import CmdGroupPop from '../../components/CmdGroupPop/CmdGroupPop';
 import { Loading } from '../../components/Loading/Loading';
 import Logo from '../../components/Logo/Logo';
 import DataStore from '../../common/js/DataStorage';
-import { AREA_LIST, PLACE_ID } from '../../common/js/params';
+import { AREA_LIST, PLACE_ID, PLAN_ID } from '../../common/js/params';
 import { sendCmdGroup } from '../../common/js/utils';
 import PasswordPop from '../../components/PasswordPop/PasswordPop';
 import URLPop from '../../components/URLPop/URLPop';
@@ -138,7 +138,8 @@ export default class Main extends Component<MainProps, MainStates> {
     openAreaLayer = (areaName, areaId) => {
         this.props.navigation.navigate('AreaPage', {
             areaId,
-            areaName
+            areaName,
+            planId: PLAN_ID
         });
     }
     openDeviceLayer = () => {

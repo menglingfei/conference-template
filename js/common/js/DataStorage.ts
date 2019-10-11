@@ -96,6 +96,7 @@ export default class DataStore {
                 body: formData // JSON.stringify(data)
             })
                 .then((response) => {
+                    debugger;
                     Loading.hide();
                     if (response.ok) {
                         return response.json();
@@ -103,6 +104,7 @@ export default class DataStore {
                     throw new Error('Network response was not ok.');
                 })
                 .then((responseData) => {
+                    debugger;
                     // this.saveData(api, responseData, null, param)
                     resolve(responseData);
                 })

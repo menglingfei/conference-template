@@ -1,7 +1,7 @@
 // 1708测试
-/*
+
 export const URL: string = 'https://api.yunzhizhan.cn';
-export const TOKEN: string = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQyNjBmODUzYzVmMDNkZjIwN2YwYTMzMWRkMGQ1MWEzY2U2YjU4N2VkODNlM2M5NjQxODkxZDdkZTkwN2I0ZmU2ODQyZjA4ZDM3NTAzOTVmIn0.eyJhdWQiOiIxIiwianRpIjoiZDI2MGY4NTNjNWYwM2RmMjA3ZjBhMzMxZGQwZDUxYTNjZTZiNTg3ZWQ4M2UzYzk2NDE4OTFkN2RlOTA3YjRmZTY4NDJmMDhkMzc1MDM5NWYiLCJpYXQiOjE1NTgwMDUxMTgsIm5iZiI6MTU1ODAwNTExOCwiZXhwIjoxNTg5NjI3NTE4LCJzdWIiOiI0OSIsInNjb3BlcyI6W119.E6Ijg5h9iXSuIiaicpC50ooX3C7sQZs7gAUuHoyvWXWl8tPu-20Wih_xVM0Z1ddZq3hvdXKABVPxbyjGpQyd7v5QOHl2UQ-pBvAPbh8U6IpTCVnRdESBuJTNsSzTHzxrSF0XB8M-5xsIg2AF9ZFrwuS3ld96usXbPBIHs7T1fJWHcFK72blDXhABd4UQ2ekQGTMYeuhthZxuLdCKV4Hrka26CqcvrvqOgn5tB_mE4-fzOnNUlNiwI3_WRYV-JkPzM52ttW5MsllkFssbnVokGjZ6prP5e-7EYF282IdsQ4Ttz9R2k62ZqVrha2eIeDeRVVazqbkdtNHsZDpddMdXjI3kWRht40wbcWYIokOLXpRROELFpI5iiplgW27bwNrj18mVOsdp19wO_SUKH8FNQOj6aRFll2pndbh47EAl7YojxVT-FhcsQBOLtWCOK4xurwf9DIdiaSS_qjE-aqIwgy080U3kFixgqOHRMphgui1tmBgSv9yapNJx4vANEw0DO5pmkUx1Qk_YXjZo1AAX_1ey6LWVV6wMVgbW3jEy1oKnIxbdbsHmv5gtZUb_4imAJ8yoG_3c3bArj_vp8Qh_dtLjRaDi0-tf3srGs73uNC9ciibNWwSsna6z6g3CpbVyQ3IUMNvGLugd1C00QfroaVz-G0I5VmQnoU6Lru7fq8Q';
+export const TOKEN: string = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjQ0NjI1MTAwMTA3M2IyYzBhYjdhNzdiOWM4ZTYyYWM4NzBhZmM5MjgxZjI1Y2RlZDFiM2VmNmEwNzdkYjA4MGY1ZTI1ZmI1MzU3ODc4ZjY0In0.eyJhdWQiOiIxIiwianRpIjoiNDQ2MjUxMDAxMDczYjJjMGFiN2E3N2I5YzhlNjJhYzg3MGFmYzkyODFmMjVjZGVkMWIzZWY2YTA3N2RiMDgwZjVlMjVmYjUzNTc4NzhmNjQiLCJpYXQiOjE1NjU2ODMxMjEsIm5iZiI6MTU2NTY4MzEyMSwiZXhwIjoxNTk3MzA1NTIxLCJzdWIiOiIyOSIsInNjb3BlcyI6W119.orxN9wP_TwkloWFdf7TZ0WYQaM-WiLcq4DxvlmGmcbaaF855McoePK7zjcJL7DKS00UYK7ZhwROpKdTkePBpQCiL5FyhS8pNHq2baaURpiuZtEkURTnc87BEDrvae2hqQQsMv_zxNnOFymgAKlL8n8DlKwwKoW7o9WPlWaBlgsZYHMLywYlqg4KzbkpWNhx6AoteicwvYZX7S0leq1KbB74kytu7qZfX15wkeVwHWYGvG3gfxIoQCeeCP3e2W3qq41taSc2RavLxd7xnR9ALg3wdgp4ISO_yGKCbciKxIrAThimN5MOf1fUiprgDrPtQrDTGJIwDKGVOakOts7j94vwMFsQQupMLE6ThTJ3pCDNC95X2bho6vcjxyt-fhH9i9mO-D0CqfqbIsRefvScVRbhfBNexSbslF7BU0LLQazdZIPGp3dHl6C4EjFdRcsv4ip6qHGUk4Ri41MwuLFIq073UAQ2M9nqYbvB1WFU7R6gMIDKDDtAw2yWMrHRLRRzDs_9HX8OjD-f2tjxbw6qN-7yWysjxXrTphk22dj1Dp2Nj3k_J-TMqSD_sccbCrJt26ygV6xrWNyEzzQdqMps1LdAfn2jzNtpD-p0AL1xzOGPkdKkXCaeZsr6gOOkMw09W1BI32spYArN2GNDU1z3L7VBuaIpUFMcnVBJ_Bk3dXj8';
 export const PLACE_ID: number = 7;
 // 需要做分屏的展区ID的数组
 export const AREA_SCREEN_LIST = [];
@@ -13,14 +13,6 @@ export const SOCKET_PORT: string = '9002';
 export const AREA_MULTI_MACHINE:Array<number> = [10];
 // 设备全开，全关指令ID
 export const AREA_LIST: Array<any> = [
-    {
-        id: 11,
-        name: '投影区',
-        x: 32,
-        y: 22,
-        width: 70,
-        height: 22
-    },
     {
         id: 10,
         name: '拼接屏区',
@@ -43,10 +35,10 @@ export const DEVICE_ALL_ID = {
     ON: 192,
     OFF: 193
 };
-*/
+export const PASSWORD: string =  '1';
 
 // 正式
-
+/*
 export const URL: string = 'https://api.yunzhizhan.cn'; // 'https://api.yunzhizhan.cn';
 export const TOKEN: string = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjhlZTBjYjUzNGI2NzU3YjJhOTdkNDJlZDRiOTI1YmQwNjE5YjY0NjBhZmI1NTllNzMyN2ZjN2QwNjJkYjdiOGFlZWViZWUwMjQ0MTk5MGQ4In0.eyJhdWQiOiIxIiwianRpIjoiOGVlMGNiNTM0YjY3NTdiMmE5N2Q0MmVkNGI5MjViZDA2MTliNjQ2MGFmYjU1OWU3MzI3ZmM3ZDA2MmRiN2I4YWVlZWJlZTAyNDQxOTkwZDgiLCJpYXQiOjE1NjgzNDAxMDUsIm5iZiI6MTU2ODM0MDEwNSwiZXhwIjoxNTk5OTYyNTA1LCJzdWIiOiI4NyIsInNjb3BlcyI6W119.Eb0vIgafZe1xS5_t5fQJ-9KFk4cnwW67bG4yti5pCD5H_dJrpwal7y-6TUI7LiEOQ80jIh261GQ5eTsT4jl8oySybbfwLSneVlUQOypBnGUBaPRzUBfvS4ghmVjcsFAZMXvctIS8wkWbi4dh1umF2KD6ul1jxXzjwxmdmxA8HJR80Jmxl_PWuK-OcvJlMoTPGnfGQfUZNe_f8zbjZFRlkJgLSIyUdhDCAPhCajUp6sRbcsf-GoUfjbHyrLwiEVrbz3qrnl9wK7wPdZpPFkpCIvQjjo4C8SG_3CWlVbNcYbAXsTRh6YYLvxi0y_SIoq99kvH26o56U_rcY6p4f0FH_RKCMuJm40nxacuhkVC2GgiEu88-SjnHUZMaiL3CQLSBDK-gZn9kkc_a6E62GtY1o0Md5FmcGAl3EBPaHpwMpLJdxyqwRSPvSV-72s8B4atO8f6RG7mzRrBRycfvhBaXoStzDO2m8xdBt6qXZA-gnZMeRyFyzx2DSn9xSbAllStV2x9VvKU1wK_NXdOb1zIbR7KfBy5Jl8Ob20vMw9hUQZqryiDEaIoVgoMdlToOJSBD034pAHOLdwM_lgV6doMUTuGVtJjd7R1wLiPCv3Lu3zyHyH_RkxpQPvxu8JYPHZBReN7X8EBuNvjpVHHL9TP6F7qDc0yZoL8JUAk_EGY6IIU';
 export const PLACE_ID: number = 39;
@@ -124,6 +116,7 @@ export const AREA_LIST: Array<any> = [
 ];
 export const PASSWORD: string =  '1';
 export const PLAN_ID = 95;
+*/
 /************************* Common ************************/
 export const DEST = "16_05541352";
 // 中控服务ID
