@@ -251,7 +251,7 @@ export default class Main extends Component<MainProps, MainStates> {
                         </View>
                     </View>
                     <BoxShadow setting={shadowOpt}>
-                        <Text style={styles.currentWeb}>当前网络：{ currentWebType === 'WIFI' ? '无线网络' : '离线模式' }</Text>
+                        <Text style={styles.currentWeb}>当前网络：{ currentWebType === 'WIFI' ? '无线模式' : '本地模式' }</Text>
                         <View style={styles.contentIndex}>
                             <View style={styles.header}>
                                 <Text style={styles.totalEn}>INTERNET</Text>

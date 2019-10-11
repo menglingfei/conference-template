@@ -17,10 +17,11 @@ export default class BgButton extends Component<ButtonProps> {
     }
     public static dataStore:any = new DataStore();
     sendCmd = (id: number): void => {
-        BgButton.dataStore.beforeFetchNetData('/api/ctrl_cmd/run_device_command', {
+        const params = {
             function_id: this.props.id,
             device_id: id
-        })
+        }
+        BgButton.dataStore.fetchData('/api/ctrl_cmd/run_device_command', params, JSON.stringify(params))
             .then((data: any) => {
                 // TODO
             })
