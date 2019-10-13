@@ -37,7 +37,17 @@ export default class SceneList extends Component<SceneListProps, SceneListState>
                 borderBottomLeftRadius: 8,
                 borderBottomRightRadius: 8,
             }} showsVerticalScrollIndicator={true}>
-                {sceneList.length > 0 && this.renderSceneList(sceneList)}
+
+                {
+                    sceneList.length > 0 ?
+                    this.renderSceneList(sceneList)
+                    :
+                    <Text style={{
+                        textAlign: 'center',
+                        height: '100%',
+                        color: '#ddd'
+                    }}>暂无数据</Text>
+                }
             </ScrollView>
         );
     }
